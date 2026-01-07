@@ -11,12 +11,10 @@ public final class DataSourceRouting extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String key = DataSourceContextHolder.get();
         log.debug("Determining DataSource for key: {}", key);
-
-        // Возвращаем только "guest" или "main_user"
         if ("guest".equals(key)) {
             return "guest";
         }
-        return "main_user"; // По умолчанию - основной пользователь
+        return "main_user";
     }
 
     @Override
