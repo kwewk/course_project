@@ -11,10 +11,6 @@ import java.util.List;
 @Repository
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
 
-    List<RecipeIngredient> findByRecipeId(Long recipeId);
-
-    List<RecipeIngredient> findByIngredientId(Long ingredientId);
-
     @Query(value = """
         SELECT 
             i."Name" as ingredient_name,

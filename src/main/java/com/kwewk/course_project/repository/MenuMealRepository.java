@@ -11,10 +11,6 @@ import java.util.List;
 @Repository
 public interface MenuMealRepository extends JpaRepository<MenuMeal, Long> {
 
-    List<MenuMeal> findByMenuId(Long menuId);
-
-    List<MenuMeal> findByMealId(Long mealId);
-
     @Query(value = """
         SELECT 
             i."Name" as ingredient_name,

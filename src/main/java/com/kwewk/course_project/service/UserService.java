@@ -1,7 +1,6 @@
 package com.kwewk.course_project.service;
 
 import com.kwewk.course_project.dto.UserDTO;
-import com.kwewk.course_project.exception.BadRequestException;
 import com.kwewk.course_project.exception.NotFoundException;
 import com.kwewk.course_project.model.User;
 import com.kwewk.course_project.repository.UserRepository;
@@ -14,21 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Transactional
-    public UserDTO registerUser(String name) {
-        if (userRepository.existsByName(name)) {
-            throw new BadRequestException("User with name '" + name + "' already exists");
-        }
-
-        User user = User.builder()
-                .name(name)
-                .isRegistered(true)
-                .build();
-
-        user = userRepository.save(user);
-        return convertToDTO(user);
-    }
 
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {

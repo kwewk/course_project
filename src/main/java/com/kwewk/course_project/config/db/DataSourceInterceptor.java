@@ -16,10 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class DataSourceInterceptor implements HandlerInterceptor {
 
     private final UserRepository userRepository;
-    private final DataSourceRouting dataSourceRouting;
-
     private static final String USER_ID_HEADER = "User-Id";
-    private static final String DEFAULT_USER_PASSWORD = "user_password";
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request,
@@ -30,22 +27,14 @@ public class DataSourceInterceptor implements HandlerInterceptor {
 
             if (userIdHeader != null && !userIdHeader.isEmpty()) {
                 Long userId = Long.parseLong(userIdHeader);
-
                 User user = userRepository.findById(userId).orElse(null);
 
                 if (user != null && user.getIsRegistered()) {
-                    String username = user.getName();
-
-                    if (!dataSourceRouting.dataSourceExists(username)) {
-                        dataSourceRouting.addDataSource(username, DEFAULT_USER_PASSWORD);
-                    }
-
-                    DataSourceContextHolder.set(username);
-                    log.debug("Set DataSource context to user: {}", username);
-
+                    DataSourceContextHolder.set("main_user");
+                    log.debug("Set DataSource to: main_user (User ID: {})", userId);
                 } else {
                     DataSourceContextHolder.set("guest");
-                    log.debug("Set DataSource context to guest");
+                    log.debug("Set DataSource to: guest");
                 }
             } else {
                 DataSourceContextHolder.set("guest");
@@ -56,7 +45,7 @@ public class DataSourceInterceptor implements HandlerInterceptor {
 
         } catch (Exception e) {
             log.error("Error in DataSourceInterceptor", e);
-            DataSourceContextHolder.set("default");
+            DataSourceContextHolder.set("guest");
             return true;
         }
     }

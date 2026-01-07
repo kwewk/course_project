@@ -2,7 +2,6 @@ package com.kwewk.course_project.service;
 
 import com.kwewk.course_project.dto.IngredientDTO;
 import com.kwewk.course_project.exception.NotFoundException;
-import com.kwewk.course_project.model.Recipe;
 import com.kwewk.course_project.repository.RecipeIngredientRepository;
 import com.kwewk.course_project.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,9 @@ public class RecipeCheckService {
 
     @Transactional(readOnly = true)
     public Map<String, Object> checkRecipeAvailability(Long recipeId, Long userId) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new NotFoundException("Recipe not found"));
+        if (!recipeRepository.existsById(recipeId)) {
+            throw new NotFoundException("Recipe not found");
+        }
 
         List<Object[]> missingIngredients = recipeIngredientRepository.findMissingIngredients(recipeId, userId);
 

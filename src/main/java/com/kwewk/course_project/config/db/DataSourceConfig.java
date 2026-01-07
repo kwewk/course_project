@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 public class DataSourceConfig {
@@ -26,21 +26,29 @@ public class DataSourceConfig {
     public DataSourceRouting dataSourceRouting() {
         DataSourceRouting routingDataSource = new DataSourceRouting();
 
-        routingDataSource.setEnvironment(environment);
+        String url = environment.getProperty("spring.datasource.url");
+        String driverClassName = environment.getProperty("spring.datasource.driver-class-name");
 
-        DataSource defaultDataSource = DataSourceBuilder.create()
-                .url(environment.getProperty("spring.datasource.url"))
-                .username(environment.getProperty("basic.datasource.username"))
-                .password(environment.getProperty("basic.datasource.password"))
-                .driverClassName(environment.getProperty("spring.datasource.driver-class-name"))
+        DataSource guestDataSource = DataSourceBuilder.create()
+                .url(url)
+                .username("guest_role")
+                .password("guest_password_change_me")
+                .driverClassName(driverClassName)
                 .build();
 
-        Map<Object, Object> targetDataSources = new ConcurrentHashMap<>();
-        targetDataSources.put("default", defaultDataSource);
-        targetDataSources.put("guest", defaultDataSource);
+        DataSource mainUserDataSource = DataSourceBuilder.create()
+                .url(url)
+                .username("main_user")
+                .password("user_password_change_me")
+                .driverClassName(driverClassName)
+                .build();
+
+        Map<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put("guest", guestDataSource);
+        targetDataSources.put("main_user", mainUserDataSource);
 
         routingDataSource.setTargetDataSources(targetDataSources);
-        routingDataSource.setDefaultTargetDataSource(defaultDataSource);
+        routingDataSource.setDefaultTargetDataSource(mainUserDataSource);
 
         return routingDataSource;
     }

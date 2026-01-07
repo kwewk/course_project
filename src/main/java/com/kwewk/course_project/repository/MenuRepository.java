@@ -13,8 +13,6 @@ import java.util.Optional;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    List<Menu> findByUserId(Long userId);
-
     Optional<Menu> findByUserIdAndDate(Long userId, LocalDate date);
 
     List<Menu> findByUserIdAndDateBetween(Long userId, LocalDate startDate, LocalDate endDate);

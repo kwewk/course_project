@@ -25,7 +25,4 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE i.name LIKE %:ingredientName%
         """)
     List<Recipe> searchByIngredientName(@Param("ingredientName") String ingredientName);
-
-    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Recipe r WHERE r.id = :recipeId AND r.user.id = :userId")
-    boolean isRecipeOwner(@Param("recipeId") Long recipeId, @Param("userId") Long userId);
 }

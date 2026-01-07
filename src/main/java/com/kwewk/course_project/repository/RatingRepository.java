@@ -7,16 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     List<Rating> findByMealId(Long mealId);
-
-    List<Rating> findByUserId(Long userId);
-
-    Optional<Rating> findByMealIdAndUserId(Long mealId, Long userId);
 
     @Query("SELECT AVG(r.rating) FROM Rating r WHERE r.meal.id = :mealId")
     Double calculateAverageRating(@Param("mealId") Long mealId);

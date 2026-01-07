@@ -19,11 +19,4 @@ public interface RecipeStepRepository extends JpaRepository<RecipeStep, Long> {
         AND rs.incomingEdges IS EMPTY
         """)
     List<RecipeStep> findStartingSteps(@Param("recipeId") Long recipeId);
-
-    @Query("""
-        SELECT rs FROM RecipeStep rs
-        WHERE rs.recipe.id = :recipeId
-        AND rs.outgoingEdges IS EMPTY
-        """)
-    List<RecipeStep> findFinalSteps(@Param("recipeId") Long recipeId);
 }
